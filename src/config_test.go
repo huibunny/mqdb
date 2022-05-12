@@ -55,6 +55,7 @@ func TestLoadConfig(t *testing.T) {
 	}
 	cfg := LoadConfig(filename)
 	fmt.Printf("version: %v.\n", cfg.App.Version)
+	fmt.Printf("Rabbitmq durable: %v.\n", cfg.RabbitMQ.Durable)
 	for _, listener := range cfg.Listener {
 		fmt.Printf("listener: \n")
 		fmt.Printf("  type: %v.\n", listener.Type)

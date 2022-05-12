@@ -68,6 +68,9 @@ func consumeMsg(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueNam
 								itemMap := item.Map()
 								valuesArray := itemMap["values"].Array()
 								fieldsArray := itemMap["fields"].Array()
+								if len(valuesArray) == 0 || len(fieldsArray) == 0 {
+									continue
+								}
 								strFields = make([]string, len(fieldsArray))
 								strValues = make([]string, len(fieldsArray))
 								fieldIndex := 0
@@ -140,7 +143,7 @@ func consumeMsg(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueNam
 	log.Printf(" [*] Aborting RPC requests.\n")
 }
 
-func consume(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueName string, listener []InstanceInfo) {
+func consume(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueName string, listener []InstanceInfo, durable bool) {
 	_, err := ch.QueueDeclare(
 		queueName, // name
 		true,      // durable
@@ -196,7 +199,7 @@ func main() {
 			// other listener
 		}
 	}
-	consume(foreverChan, dbPools, channel, cfg.RabbitMQ.Queue, cfg.Listener)
+	consume(foreverChan, dbPools, channel, cfg.RabbitMQ.Queue, cfg.Listener, cfg.RabbitMQ.Durable)
 
 	// no delete consumption for the present.
 	// chdel, err := conn.Channel()

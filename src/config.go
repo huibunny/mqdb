@@ -41,6 +41,7 @@ type YmlConfig struct {
 		Queue        string `yaml:"queue"`
 		ExchangeTyep string `yaml:"exchangetype"`
 		Routingkey   string `yaml:"routingkey"`
+		Durable      bool   `yaml:"durable"`
 	} `yaml:"rabbitmq"`
 	Listener []InstanceInfo `yaml:"listener"`
 }

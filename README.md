@@ -13,8 +13,11 @@ The software is provided as is under no guarantee.
 
 ```bash
 
-cd src
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o mqdb
+$ cd src
+$ go mod init mqdb/src
+$ go mod tidy
+
+$ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o mqdb
 
 ```
 

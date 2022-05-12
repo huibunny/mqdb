@@ -4,13 +4,14 @@ app:
 rabbitmq:
         host: localhost
         port: 5672
-        username: test
+        username: test        
         password: test
         virtualhost: /
-        exchange: test.queue.exchange
+        exchange: 
         queue: test.queue
-        exchangetype: direct
-        routingkey: test.queue.key
+        exchangetype: topic
+        routingkey: 
+        durable: false
 listener:
         -
                 type: mysql
@@ -22,18 +23,4 @@ listener:
                 charset: utf8mb4
                 table: user
                 unikey: openid
-        -
-                type: mysql
-                host: localhost
-                port: 3306
-                username: test
-                password: test
-                db: student
-                charset: utf8mb4
-                table: student_info
-                unikey: openid
-                ignore: [ unionid, ]
-                fieldmap:
-                        nick_name: stu_nick
-
-
+        
