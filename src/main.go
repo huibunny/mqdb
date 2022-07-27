@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/streadway/amqp"
@@ -41,7 +40,7 @@ func consumeMsg(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueNam
 				fieldMap := listenerInstance.FieldMap
 				ignoreList := listenerInstance.Ignore
 				var strFields []string
-				var strValues []string
+				var strValues []interface{}
 				// strMsg := string(msg.Body)
 				// log.Printf("receive msg: %s.\n", strMsg)
 				head := gjson.GetBytes(msg.Body, "head")
@@ -69,7 +68,7 @@ func consumeMsg(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueNam
 								valuesArray := itemMap["values"].Array()
 								fieldsArray := itemMap["fields"].Array()
 								strFields = make([]string, len(fieldsArray))
-								strValues = make([]string, len(fieldsArray))
+								strValues = make([]interface{}, len(fieldsArray))
 								fieldIndex := 0
 								for index, field := range fieldsArray {
 									strField := field.String()
@@ -90,7 +89,7 @@ func consumeMsg(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueNam
 										valueItem := valuesArray[index]
 										strValue := ""
 										if valueItem.Type == gjson.String {
-											strValue = "'" + valueItem.String() + "'"
+											strValue = valueItem.String()
 										} else if valueItem.Type == gjson.Null {
 											strValue = valueItem.Raw
 										} else {
@@ -118,10 +117,12 @@ func consumeMsg(forever chan bool, dbpools []*sql.DB, ch *amqp.Channel, queueNam
 				}
 
 				log.Printf("receive a message, delivery tag: %d. \n", msg.DeliveryTag)
-				insertSql := BuildInsertSql(tableName, strFields, "("+strings.Join(strValues, ",")+")", uniKey)
-				log.Printf("insert sql: %v.\n", insertSql)
-				result := Insert(dbpool, insertSql)
-				if result != nil {
+				insertSql, args := BuildInsertSql(tableName, strFields, strValues, uniKey)
+				log.Printf("insert sql: %v, args: %v.\n", insertSql, args)
+				result, err := dbpool.Exec(insertSql, args...)
+				if err != nil {
+					log.Print(err)
+				} else {
 					lastInsertID, _ := result.LastInsertId()
 					affectedRows, _ := result.RowsAffected()
 					log.Printf("last insert ID: %v, affected rows: %v.", lastInsertID, affectedRows)

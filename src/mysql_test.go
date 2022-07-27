@@ -7,11 +7,11 @@ import (
 
 // https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter09/09.1.html
 func TestMyDBPool(t *testing.T) {
-	db := myDBPool("mc", "Mc@654321",
-		"localhost",
+	db := myDBPool("root", "123456",
+		"127.0.0.1",
 		3306, "test", "utf8mb4")
 	defer db.Close()
-	rows, _ := db.Query("select id from closure_table_user")
+	rows, _ := db.Query("select id from wx_user")
 	if rows == nil {
 		t.Errorf("rows is nil; expected not nil.")
 	}
@@ -25,11 +25,15 @@ func TestMyDBPool(t *testing.T) {
 }
 
 func TestInsertSql(t *testing.T) {
-	db := myDBPool("mc", "Mc@654321",
-		"localhost",
+	db := myDBPool("root", "123456",
+		"127.0.0.1",
 		3306, "test", "utf8mb4")
 	defer db.Close()
-	result := Insert(db, "INSERT INTO `wx_user`(`openid`, `unionid`, `nick_name`, `avatar_url`, `gender`) VALUES ('openid001', 'unionid001', 'name001', 'avatar001', 0)")
+	sql, args := BuildInsertSql("wx_user", []string{"openid", "unionid", "nick_name", "avatar_url", "gender"}, []interface{}{"openid001", "unionid001", "nick_name001", "avatar_url001", 0}, "openid")
+	result, err := db.Exec(sql, args...)
+	if err != nil {
+		print(err)
+	}
 	lastInsertID, _ := result.LastInsertId()
 	affected, _ := result.RowsAffected()
 	fmt.Printf("last insert id: %v, affected rows: %v.\n", lastInsertID, affected)
@@ -37,7 +41,7 @@ func TestInsertSql(t *testing.T) {
 
 func TestBuildInsertSql(t *testing.T) {
 	fields := []string{"openid", "unionid", "nick_name", "avatar_url", "gender"}
-	values := "(\"o4vAx5fX1tGLhwYE3YQleBnjePNk\",\"oSCbM6kY4k7Hrnlh99ytx5x9cVS4\",\"黄卫\",\"https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoJXB1uYXWH6WKNJhR2YFbeHKeC9rCOVyvwtZdibmACHc1CR565C1SaqKPibUaicewmDDfsBAlIZpfKg/132\",0)"
-	insertSql := BuildInsertSql("wx_user", fields, values, "openid")
-	fmt.Printf("insert sql: %s.\n", insertSql)
+	values := []interface{}{"openid001", "unionid001", "nickname001", "avatar001", 0}
+	insertSql, args := BuildInsertSql("wx_user", fields, values, "openid")
+	fmt.Printf("insert sql: %s, args: %v.\n", insertSql, args)
 }

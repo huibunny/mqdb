@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strings"
 	"time"
 
+	sq "github.com/Masterminds/squirrel"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -37,25 +37,29 @@ func myDBPool(userName string, password string, host string, port int, database 
 	return mysqlDb
 }
 
-func BuildInsertSql(tableName string, fields []string, values string, unikey string) string {
-	strFields := "(`" + strings.Join(fields, "`,`") + "`)"
-	insertSql := "INSERT INTO `" + tableName + "` " + strFields + " VALUES " + values
-	if len(unikey) > 0 {
-		insertSql += " AS t ON DUPLICATE KEY UPDATE "
-		updateStr := ""
-		for _, field := range fields {
-			if field != unikey {
-				if len(updateStr) > 0 {
-					updateStr += ", "
+func BuildInsertSql(tableName string, fields []string, values []interface{}, unikey string) (string, []interface{}) {
+	insertSql, args, err := sq.Insert(tableName).Columns(fields...).Values(values...).ToSql()
+	if err != nil {
+		print(err)
+		return "", nil
+	} else {
+		if len(unikey) > 0 {
+			insertSql += " AS t ON DUPLICATE KEY UPDATE "
+			updateStr := ""
+			for _, field := range fields {
+				if field != unikey {
+					if len(updateStr) > 0 {
+						updateStr += ", "
+					}
+					strField := "`" + field + "`"
+					updateStr += strField + "=t." + strField
 				}
-				strField := "`" + field + "`"
-				updateStr += strField + "=t." + strField
 			}
+			insertSql += updateStr
 		}
-		insertSql += updateStr
 	}
 
-	return insertSql
+	return insertSql, args
 }
 
 func Insert(db *sql.DB, sql string) sql.Result {
