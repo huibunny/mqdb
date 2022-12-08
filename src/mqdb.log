@@ -1,0 +1,6 @@
+{"level":"info","time":"2022-12-08T10:04:23+08:00","caller":"/home/apple/sync/workspace/github/hb/mqdb/src/main.go:220","message":"App version: v1.0."}
+{"level":"info","time":"2022-12-08T10:04:23+08:00","caller":"/home/apple/sync/workspace/github/hb/mqdb/src/main.go:225","message":"broker: amqp://guest:guest@192.168.0.207:5672."}
+{"level":"info","time":"2022-12-08T10:04:23+08:00","caller":"/home/apple/sync/workspace/github/hb/mqdb/src/pkg/logger/logger.go:65","message":"Failed to connect to RabbitMQ: Exception (501) Reason: \"EOF\""}
+{"level":"info","time":"2022-12-08T10:04:23+08:00","caller":"/home/apple/sync/workspace/github/hb/mqdb/src/pkg/logger/logger.go:84","message":"Failed to connect to RabbitMQ: Exception (501) Reason: \"EOF\""}
+{"level":"info","time":"2022-12-08T10:04:23+08:00","caller":"/home/apple/sync/workspace/github/hb/mqdb/src/pkg/logger/logger.go:65","message":"Failed to open a channel: Exception (504) Reason: \"channel/connection is not open\""}
+{"level":"info","time":"2022-12-08T10:04:23+08:00","caller":"/home/apple/sync/workspace/github/hb/mqdb/src/pkg/logger/logger.go:84","message":"Failed to open a channel: Exception (504) Reason: \"channel/connection is not open\""}

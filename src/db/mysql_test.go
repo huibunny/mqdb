@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 // https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter09/09.1.html
 func TestMyDBPool(t *testing.T) {
-	db := myDBPool("root", "123456",
+	db := MyDBPool("root", "123456",
 		"127.0.0.1",
 		3306, "test", "utf8mb4")
 	defer db.Close()
@@ -25,7 +25,7 @@ func TestMyDBPool(t *testing.T) {
 }
 
 func TestInsertSql(t *testing.T) {
-	db := myDBPool("root", "123456",
+	db := MyDBPool("root", "123456",
 		"127.0.0.1",
 		3306, "test", "utf8mb4")
 	defer db.Close()

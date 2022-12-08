@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"database/sql"
@@ -12,7 +12,7 @@ import (
 
 // basic type mapping between golang and pgsql:
 //            https://gowalker.org/github.com/jackc/pgx
-func myDBPool(userName string, password string, host string, port int, database string, charset string) (mysqlDb *sql.DB) {
+func MyDBPool(userName string, password string, host string, port int, database string, charset string) (mysqlDb *sql.DB) {
 	url := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s", userName, password, host, port, database, charset)
 	// 打开连接失败
 	var mysqlDbErr error

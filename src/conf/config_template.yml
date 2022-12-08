@@ -1,6 +1,9 @@
 app:
     version: v1.0
     routinenum: 8
+logger:
+  level: debug
+  file: mqdb.log
 rabbitmq:
         host: localhost
         port: 5672
@@ -12,6 +15,14 @@ rabbitmq:
         exchangetype: direct
         routingkey: test.queue.key
 listener:
+        -
+                type: mongo
+                host: localhost
+                port: 27017
+                username: test
+                password: test
+                db: test
+                unikey: id
         -
                 type: mysql
                 host: localhost
@@ -34,6 +45,6 @@ listener:
                 unikey: openid
                 ignore: [ unionid, ]
                 fieldmap:
-                        nick_name: stu_nick
+                        nick_name: nick
 
 

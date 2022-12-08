@@ -1,2 +1,5 @@
 target
 config.yml
+.history
+mqdb
+src/__debug_bin
